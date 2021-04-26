@@ -1,5 +1,4 @@
-#[allow(unused_imports)]
-use anyhow::{anyhow, Result};
+use anyhow::Result;
 
 use std::fs;
 use std::cmp::*;
@@ -164,8 +163,6 @@ fn manhattan_cross_dist(wps: Option<&Vec<WirePath>>, pd: i64, cwp: &WirePath) ->
 	}
 	dist
 }
-
-
 
 fn make_wirepath_set(paths: &Vec<String>, dist: impl Fn(Option<&Vec<WirePath>>, i64, &WirePath) -> i64, wp1: Option<&Vec<WirePath>>)
 	-> Result<(Vec<WirePath>, i64)> {
