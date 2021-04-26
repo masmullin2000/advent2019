@@ -4,6 +4,9 @@ extern crate day3_lib;
 use day3_lib::*;
 
 fn main() -> Result<()> {
-    day3("../input")?;
+    match day3("../input") {
+        Ok(v) => println!("distance is {}", v),
+        Err(_) => {}
+    }
     Ok(())
 }
