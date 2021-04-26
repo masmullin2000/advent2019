@@ -5,7 +5,10 @@ use day3_lib::*;
 
 fn main() -> Result<()> {
     match day3("../input") {
-        Ok(v) => println!("distance is {}", v),
+        Ok((man,lat)) => {
+            println!("manhattan is {}", man);
+            println!("latency is {}", lat);
+        },
         Err(_) => {}
     }
     Ok(())
