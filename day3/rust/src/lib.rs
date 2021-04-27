@@ -161,27 +161,6 @@ fn no_op(_wps: Option<&Vec<WirePath>>, _pd: i64, _cwp: &WirePath) -> i64 {
     0
 }
 
-fn manhattan_cross_dist(wps: Option<&Vec<WirePath>>, pd: i64, cwp: &WirePath) -> i64 {
-    let mut dist: i64 = pd;
-    match wps {
-        Some(wps) => {
-            for wp in wps {
-                match wp.crosses(cwp) {
-                    Some(p) => {
-                        let pot_dist = p.manhattan_dist();
-                        if pot_dist < dist {
-                            dist = pot_dist
-                        }
-                    }
-                    _ => {}
-                }
-            }
-        }
-        _ => {}
-    }
-    dist
-}
-
 fn make_wirepath_set(
     paths: &Vec<String>,
     dist: impl Fn(Option<&Vec<WirePath>>, i64, &WirePath) -> i64,
@@ -205,6 +184,29 @@ fn make_wirepath_set(
     Ok((wps, dst))
 }
 
+fn manhattan_cross_dist(wps: Option<&Vec<WirePath>>, pd: i64, cwp: &WirePath) -> i64 {
+    let mut dist: i64 = pd;
+
+    let paths = match wps {
+        Some(p) => p,
+        _ => return dist
+    };
+
+    for wp in paths {
+        let p = match wp.crosses(cwp) {
+            Some(p) => p,
+            _ => continue,
+        };
+
+        let pot_dist = p.manhattan_dist();
+        if pot_dist < dist {
+            dist = pot_dist;
+        }
+    }
+
+    dist
+}
+
 fn get_manhattan(paths1: &Vec<String>, paths2: &Vec<String>) -> Result<i64> {
     let (wp1, _) = make_wirepath_set(&paths1, no_op, None)?;
     let (_, dist) = make_wirepath_set(&paths2, manhattan_cross_dist, Some(&wp1))?;
@@ -219,29 +221,30 @@ pub fn gm(paths1: &Vec<String>, paths2: &Vec<String>) -> Result<i64> {
 
 fn latency_cross_dist(wps: Option<&Vec<WirePath>>, pd: i64, cwp: &WirePath) -> i64 {
     let mut dist: i64 = pd;
-    match wps {
-        Some(wps) => {
-            for wp in wps {
-                match wp.crosses(cwp) {
-                    Some(p) => {
-                        let mut latency = wp.get_prev_latency() + cwp.get_prev_latency();
-                        if wp.is_hor() {
-                            latency += (wp.a.x - p.x).abs();
-                            latency += (cwp.a.y - p.y).abs();
-                        } else {
-                            latency += (wp.a.y - p.y).abs();
-                            latency += (cwp.a.x - p.x).abs();
-                        }
 
-                        if latency < dist {
-                            dist = latency;
-                        }
-                    }
-                    _ => {}
-                }
-            }
+    let paths = match wps {
+        Some(wps) => wps,
+        _ => return dist
+    };
+
+    for wp in paths {
+        let p = match wp.crosses(cwp) {
+            Some(p) => p,
+            _ => continue,
+        };
+
+        let mut latency = wp.get_prev_latency() + cwp.get_prev_latency();
+        if wp.is_hor() {
+            latency += (wp.a.x - p.x).abs();
+            latency += (cwp.a.y - p.y).abs();
+        } else {
+            latency += (wp.a.y - p.y).abs();
+            latency += (cwp.a.x - p.x).abs();
         }
-        _ => {}
+
+        if latency < dist {
+            dist = latency;
+        }
     }
 
     dist
