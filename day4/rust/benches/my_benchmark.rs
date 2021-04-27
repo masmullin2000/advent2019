@@ -1,26 +1,32 @@
-extern crate day3_lib;
+extern crate day4_lib;
 
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
-use day3_lib::*;
+use day4_lib::*;
 use std::fs;
 
 fn criterion_benchmark(c: &mut Criterion) {
-    let f_data = fs::read_to_string("../input").expect("didn't find the file");
-    let (paths1, paths2) = process_data(f_data).unwrap();
+    c.bench_function("1", |b| b.iter(|| day4(black_box("256310-732736"), black_box(1))));
 
-    c.bench_function("day3", |b| b.iter(|| day3(black_box("../input"))));
+    c.bench_function("6", |b| b.iter(|| day4(black_box("256310-732736"), black_box(6))));
 
-    c.bench_function("gm", |b| {
-        b.iter(|| gm(black_box(&paths1), black_box(&paths2)))
-    });
-    c.bench_function("gl", |b| {
-        b.iter(|| gl(black_box(&paths1), black_box(&paths2)))
-    });
+    c.bench_function("12", |b| b.iter(|| day4(black_box("256310-732736"), black_box(12))));
 
-    let f2_data = fs::read_to_string("../input").expect("didn't find the file");
-    c.bench_function("proc", |b| {
-        b.iter(|| process_data(black_box(f2_data.to_owned())))
-    });
+    c.bench_function("18", |b| b.iter(|| day4(black_box("256310-732736"), black_box(18))));
+
+    c.bench_function("24", |b| b.iter(|| day4(black_box("256310-732736"), black_box(24))));
+
+    c.bench_function("48", |b| b.iter(|| day4(black_box("256310-732736"), black_box(48))));
+
+    c.bench_function("96", |b| b.iter(|| day4(black_box("256310-732736"), black_box(96))));
+
+    c.bench_function("10000", |b| b.iter(|| day4(black_box("256310-732736"), black_box(10000))));
+
+    // c.bench_function("50000", |b| b.iter(|| day4(black_box("256310-732736"), black_box(50000))));
+
+    // c.bench_function("100000", |b| b.iter(|| day4(black_box("256310-732736"), black_box(100000))));
+
+    // c.bench_function("1000000", |b| b.iter(|| day4(black_box("256310-732736"), black_box(1000000))));
+
 }
 
 criterion_group!(benches, criterion_benchmark);
