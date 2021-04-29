@@ -73,9 +73,9 @@ func (w wirepath) east() int {
 
 func (w wirepath) get_latency() int {
 	if w.is_hor() {
-		return w.prev_latency + Abs(w.west() - w.east())
+		return w.prev_latency + Abs(w.west()-w.east())
 	}
-	return w.prev_latency + Abs(w.north() - w.south())
+	return w.prev_latency + Abs(w.north()-w.south())
 }
 
 func (self wirepath) crosses(wp wirepath) (bool, point) {
@@ -86,21 +86,21 @@ func (self wirepath) crosses(wp wirepath) (bool, point) {
 	if (self.a.x == 0 && self.a.y == 0) ||
 		(wp.a.x == 0 && wp.a.y == 0) {
 		return false, point{0, 0}
-	} 
+	}
 
 	if self.is_hor() {
-		if (wp.north() >= self.north() && 
-		    wp.south() <= self.south() && 
-		    wp.east() <= self.east() &&
-		    wp.west() >= self.west()) {
+		if wp.north() >= self.north() &&
+			wp.south() <= self.south() &&
+			wp.east() <= self.east() &&
+			wp.west() >= self.west() {
 			p := point{wp.a.x, self.a.y}
 			return true, p
 		}
 	} else {
-		if (self.north() >= wp.north() &&
-			self.south() <= wp.south() && 
+		if self.north() >= wp.north() &&
+			self.south() <= wp.south() &&
 			self.east() <= wp.east() &&
-			self.west() >= wp.west()) {
+			self.west() >= wp.west() {
 			p := point{self.a.x, wp.a.y}
 			return true, p
 		}
@@ -142,7 +142,7 @@ func make_wirepath_set(
 	dist_calc func([]wirepath, int, wirepath) int,
 	wps1 []wirepath) ([]wirepath, int) {
 
-	p1 := point{0,0}
+	p1 := point{0, 0}
 	var wps []wirepath
 	lat := 0
 	dist := math.MaxInt32
